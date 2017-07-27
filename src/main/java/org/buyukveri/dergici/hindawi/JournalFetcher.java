@@ -22,6 +22,17 @@ public class JournalFetcher {
 
     public void fetchHindawi() {
         try {
+            String link = "https://www.hindawi.com/journals/";
+            Document doc = WebPageDownloader.getPage(link);
+            Elements lis = doc.getElementsByAttributeValue("class", "li_special");
+            for (Element li : lis) {
+
+                Elements as = li.getElementsByTag("a");
+                for (Element a : as) {
+                    String name = a.attr("href").replace("/journals/", "").replace("/", "");
+                    getArticleLinks(name, "https://www.hindawi.com" + a.attr("href") + "contents");
+                }
+            }
             String[] journals = {"jp",
                 "jphar",
                 "jr",
@@ -40,9 +51,9 @@ public class JournalFetcher {
                 "ijz",
                 "jac"};
 
-            for (String journal : journals) {
-                getArticleLinks((String) journal, "https://www.hindawi.com/journals/" + (String) journal + "/contents");
-            }
+//            for (String journal : journals) {
+//                getArticleLinks((String) journal, "https://www.hindawi.com/journals/" + (String) journal + "/contents");
+//            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -59,7 +70,7 @@ public class JournalFetcher {
             }
 
             //kaç sayfa indirilecek? her sayfada 25 makale var
-            for (int i = 1; i < 2; i++) {
+            for (int i = 1; i < 100; i++) {
                 String contentslink = link + "/" + i;
                 System.out.println(contentslink);
                 Document doc = WebPageDownloader.getPage(contentslink);
